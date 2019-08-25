@@ -15,7 +15,10 @@ def csv_upload():
     csvfile = request.files.get('csvfile')
     df = pd.read_csv(csvfile.stream, index_col="index")
     df["row4"] = df["row3"]*2
-    return Response(df.to_csv(), mimetype="text/csv")
+    res = Response(df.to_csv(), mimetype="application/octet-stream")
+    res.headers['Content-Disposition'] = u'attachment; filename=processed.csv'
+    return res
+
 
 if __name__ == '__main__':
     app.run()
