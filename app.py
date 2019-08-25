@@ -1,5 +1,5 @@
 import pandas as pd
-from flask import Flask, render_template
+from flask import Flask, render_template, Response
 from flask import request
 
 app = Flask(__name__)
@@ -13,8 +13,9 @@ def index():
 @app.route('/upload', methods=['POST'])
 def csv_upload():
     csvfile = request.files.get('csvfile')
-    df = pd.read_csv(csvfile.stream)
-    return df.to_string()
+    df = pd.read_csv(csvfile.stream, index_col="index")
+    df["row4"] = df["row3"]*2
+    return Response(df.to_csv(), mimetype="text/csv")
 
 if __name__ == '__main__':
     app.run()
